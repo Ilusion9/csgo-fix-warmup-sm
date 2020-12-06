@@ -13,7 +13,11 @@ public Plugin myinfo =
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
-	SDKHook(entity, SDKHook_SpawnPost, SDK_OnEntitySpawn_Post);
+	// remove trigger_multiple
+	if (StrEqual(classname, "trigger_multiple", true))
+	{
+		SDKHook(entity, SDKHook_SpawnPost, SDK_OnEntitySpawn_Post);
+	}
 }
 
 public void SDK_OnEntitySpawn_Post(int entity)
@@ -28,16 +32,7 @@ public void SDK_OnEntitySpawn_Post(int entity)
 	}
 	
 	// remove trigger_multiple only in warmup
-	if (!IsValveWarmupPeriod())
-	{
-		return;
-	}
-	
-	char classname[256];
-	GetEntityClassname(entity, classname, sizeof(classname));
-	
-	// remove trigger_multiple
-	if (StrEqual(classname, "trigger_multiple", true))
+	if (IsValveWarmupPeriod())
 	{
 		RequestFrame(Frame_RemoveEntity, EntIndexToEntRef(entity));
 	}
