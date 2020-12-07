@@ -13,7 +13,7 @@ public Plugin myinfo =
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
-	if (StrEqual(classname, "logic_script", true))
+	if (StrEqual(classname, "logic_script", true) || StrEqual(classname, "trigger_multiple", true))
 	{
 		SDKHook(entity, SDKHook_SpawnPost, SDK_OnEntitySpawn_Post);
 	}
@@ -33,7 +33,7 @@ public void SDK_OnEntitySpawn_Post(int entity)
 	char vscripts[256];
 	GetEntPropString(entity, Prop_Data, "m_iszVScripts", vscripts, sizeof(vscripts));
 	
-	// remove this script
+	// remove this entity
 	if (StrEqual(vscripts, "warmup/warmup_arena.nut", true) || StrEqual(vscripts, "warmup/warmup_teleport.nut", true))
 	{
 		RequestFrame(Frame_RemoveEntity, EntIndexToEntRef(entity));
