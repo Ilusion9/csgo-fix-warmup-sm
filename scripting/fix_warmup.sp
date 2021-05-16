@@ -1,3 +1,5 @@
+#pragma newdecls required
+
 #include <sourcemod>
 #include <sdkhooks>
 #include <sdktools>
@@ -13,7 +15,8 @@ public Plugin myinfo =
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
-	if (StrEqual(classname, "logic_script", true) || StrEqual(classname, "trigger_multiple", true))
+	if (StrEqual(classname, "logic_script", true) 
+		|| StrEqual(classname, "trigger_multiple", true))
 	{
 		SDKHook(entity, SDKHook_Spawn, SDK_OnEntitySpawn);
 	}
@@ -21,20 +24,11 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 public void SDK_OnEntitySpawn(int entity)
 {
-	if (entity < 0)
-	{
-		entity = EntRefToEntIndex(entity);
-		if (entity == INVALID_ENT_REFERENCE)
-		{
-			return;
-		}
-	}
+	char vScripts[256];
+	GetEntPropString(entity, Prop_Data, "m_iszVScripts", vScripts, sizeof(vScripts));
 	
-	char scripts[256];
-	GetEntPropString(entity, Prop_Data, "m_iszVScripts", scripts, sizeof(scripts));
-	
-	// remove this entity
-	if (StrEqual(scripts, "warmup/warmup_arena.nut", true) || StrEqual(scripts, "warmup/warmup_teleport.nut", true))
+	if (StrEqual(vScripts, "warmup/warmup_arena.nut", true) 
+		|| StrEqual(vScripts, "warmup/warmup_teleport.nut", true))
 	{
 		DispatchKeyValue(entity, "vscripts", "");
 		DispatchKeyValue(entity, "targetname", "");
